@@ -5,7 +5,7 @@
 set -e
 cd /Users/josephchen/Documents/bedrock-costs
 
-# Source shell profile for AWS credentials
+# Source shell profile for AWS credentials and PATH
 [[ -f ~/.zshrc ]] && source ~/.zshrc 2>/dev/null || true
 
 # Calculate dates
@@ -30,17 +30,7 @@ if grep -q "\"$YESTERDAY\"" index.html; then
     exit 0
 fi
 
-# Add new entry to costData array in index.html
-sed -i '' "/\/\/ New entries will be added here/a\\
-            { date: \"$YESTERDAY\", cost: \"$COST\" },
-" index.html
-
-# Update last updated timestamp
-sed -i '' "s/const lastUpdated = \".*\"/const lastUpdated = \"$TODAY\"/" index.html
-
-# Commit and push
-git add index.html
-git commit -m "Update: $YESTERDAY cost \$$COST"
-git push origin main
+# Use Claude Code to update HTML, commit and push
+claude --print "在 index.html 的 costData 数组中添加一条记录：{ date: \"$YESTERDAY\", cost: \"$COST\" }，并将 lastUpdated 更新为 \"$TODAY\"。然后 git add index.html && git commit -m \"Update: $YESTERDAY cost \$$COST\" && git push origin main"
 
 echo "Updated $YESTERDAY: \$$COST"
