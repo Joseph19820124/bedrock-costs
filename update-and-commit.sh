@@ -21,11 +21,8 @@ COST=$(aws ce get-cost-and-usage \
     --query 'ResultsByTime[0].Total.UnblendedCost.Amount' \
     --output text 2>/dev/null || echo "0")
 
-# Skip if cost is 0 or empty
-if [[ "$COST" == "0" || -z "$COST" ]]; then
-    echo "No Bedrock cost for $YESTERDAY, skipping update"
-    exit 0
-fi
+# Default to 0 if empty
+[[ -z "$COST" ]] && COST="0"
 
 # Check if date already exists in file
 if grep -q "\"$YESTERDAY\"" index.html; then
@@ -39,7 +36,7 @@ sed -i '' "/\/\/ New entries will be added here/a\\
 " index.html
 
 # Update last updated timestamp
-TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
+sed -i '' "s/const lastUpdated = \".*\"/const lastUpdated = \"$TODAY\"/" index.html
 
 # Commit and push
 git add index.html
