@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 # AWS Bedrock cost update and commit script
 # Run via crontab: 0 12 * * * /Users/josephchen/Documents/bedrock-costs/update-and-commit.sh
 
@@ -6,7 +6,7 @@ set -e
 cd /Users/josephchen/Documents/bedrock-costs
 
 # Source shell profile for AWS credentials
-source ~/.zshrc 2>/dev/null || source ~/.bashrc 2>/dev/null || true
+[[ -f ~/.zshrc ]] && source ~/.zshrc 2>/dev/null || true
 
 # Calculate dates
 YESTERDAY=$(date -v-1d +%Y-%m-%d)
